@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Welding Workshop</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+  <nav class="navbar">
+    <div class="logo">
+      <img src="./logo2.png" alt="Welding Workshop Logo" class="logo-img">  <h2>AMMAN WELDING WORKS</h2>
+      
+    </div>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="#billing">New Bill</a></li>
+      <li><a href="bills.html">Bill History</a></li>
+      <li><a href="quotation.html">Quotation</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <section class="hero">
+    <h1>Welcome to Welding Workshop</h1>
+    <p>Your trusted partner for precision welding services and simple billing solutions. Easily generate invoices,
+      manage services, and streamline your workshop operations.</p>
+    <a href="#billing"><button class="btn-primary">Go to Billing</button></a>
+  </section>
+  
+    <h1 style=" margin-left: 600px;"> Workshop Services</h1>
+  <section class="features" id="services">
+    <div class="card">
+      <h3>Gas welding</h3>
+      <p>A versatile metal joining process using a flame produced by burning fuel gas with oxygen for precise, strong, and clean welds..</p>
+    </div>
+    <div class="card">
+      <h3>ARC welding</h3>
+      <p>Expert ARC welding services delivering strong, precise, and durable metal joins for every project.</p>
+    </div>
+    <div class="card">
+      <h3>Metal Fabrication Work</h3>
+      <p>Expert in custom metal fabrication works including welding, cutting, and structural design for industrial and commercial needs.</p>
+    </div>
+  </section>
+
+  <section id="billing" class="container">
+    <div class="bill-header">
+      <h1>AMMAN WELDING WORKS</h1>
+      <p>20, Arch Main Road, Velankanni, Nagapattinam(dt).</p>
+      <p>Mobile: 8973894307 | Owner: M.Karthikesan</p>
+    </div>
+
+    <div id="message" aria-live="polite" style="display:none;margin:8px 0;padding:8px;border-radius:6px;background:#ffe8d6;color:#663c00;"></div>
+
+    <h2>Billing System</h2>
+
+    <div class="customer-info">
+      <label for="customerName"><strong>Customer Name:</strong></label>
+      <input type="text" id="customerName" placeholder="Enter Customer Name" required class="customer-input" autocomplete="off">
+    </div>
+
+    <div class="work-type">
+      <label for="workType"><strong>Select Work Type:</strong></label>
+      <select id="workType" required class="customer-input">
+        <option value="">-- Select Work Type --</option>
+        <option value="ARC Welding">ARC Welding</option>
+        <option value="Gas Welding">Gas Welding</option>
+        <option value="Others">Others</option>
+      </select>
+    </div>
+
+    <form id="itemForm">
+      <label for="itemName"><strong>Item / Service Name:</strong></label>
+      <input type="text" id="itemName" placeholder="Enter Item or Service Name" required autocomplete="off">
+
+      <label for="itemRate"><strong>Rate (₹):</strong></label>
+      <input type="number" id="itemRate" placeholder="Enter Rate (₹)" required min="0" step="0.01">
+
+      <label for="itemQty"><strong>Quantity:</strong></label>
+      <input type="number" id="itemQty" placeholder="Enter Quantity" required min="1" step="1">
+
+      <button type="submit" style="background-color: #073668;">Add Item</button>
+    </form><br><br>
+    
+    <table id="invoiceTable">
+      <thead>
+        <tr>
+          <th>Item</th>
+          <th>Rate</th>
+          <th>Quantity</th>
+          <th>Total</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <div class="total">
+      <strong>Grand Total: ₹<span id="grandTotal">0</span></strong>
+    </div>
+
+    <div class="total">
+      <label for="advance"><strong>Advance Amount (₹):</strong></label>
+      <input type="number" id="advance" value="0">
+    </div>
+
+    <div class="total">
+      <strong>Balance Amount: ₹<span id="balance">0</span></strong>
+    </div>
+    
+<div class="button-container">
+  <button onclick="printInvoice()">Print Invoice</button>
+  <button onclick="saveBill()" style="background:#198754;color:#fff;">Save Bill</button>
+  <button onclick="window.location.href='bills.html'" class="view-bills-btn" style="background-color: #2367b1;">View All Bills</button>
+</div>
+
+  </section>
+
+  <footer id="contact">
+    <p>© 2025 Welding Workshop. All rights reserved.</p>
+    <p>Contact: weldingworkshop@example.com | +91 98765 43210</p>
+  </footer>
+
+  <script src="js/script.js"></script>
+  </body>
+  </html>

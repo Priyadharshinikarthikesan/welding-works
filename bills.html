@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Billing History - Amman Welding Works</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .bills-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+        .bill-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            padding: 20px;
+        }
+        .bill-card header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .bill-card .customer-info {
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+        .bill-items {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+        .bill-items th, .bill-items td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .bill-items th {
+            background: #2b6cb0;
+            color: white;
+        }
+        .bill-summary {
+            text-align: right;
+            padding: 10px;
+            background: #f8fafc;
+            border-radius: 6px;
+        }
+        .actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .search-box {
+            margin-bottom: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .search-box input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+        .bill-date {
+            color: #666;
+        }
+        .no-bills {
+            text-align: center;
+            padding: 40px;
+            background: white;
+            border-radius: 8px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <img src="./logo2.png" alt="Welding Workshop Logo" class="logo-img">
+            <h2 class="brand">AMMAN WELDING WORKS</h2>
+        </div>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="index.html#billing">New Bill</a></li>
+            <li><a href="bills.html">Bill History</a></li>
+            <li><a href="quotation.html">Quotation</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <div class="bills-container">
+        <h2>Billing History</h2>
+        
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Search by customer name, date, or invoice number...">
+            <div>
+                <label for="dateFilter">Filter by date: </label>
+                <input type="date" id="dateFilter">
+                <button onclick="clearFilters()">Clear Filters</button>
+            </div>
+        </div>
+
+        <div id="billsList">
+            <!-- Bills will be dynamically added here -->
+        </div>
+    </div>
+
+    <footer id="contact">
+        <p>© 2025 Welding Workshop. All rights reserved.</p>
+        <p>Contact: weldingworkshop@example.com | +91 98765 43210</p>
+    </footer>
+
+    <script>
+        // Get stored bills from localStorage
+        function getBills() {
+            const bills = localStorage.getItem('weld_bills');
+            return bills ? JSON.parse(bills) : [];
+        }
+
+        // Save bills to localStorage
+        function saveBills(bills) {
+            localStorage.setItem('weld_bills', JSON.stringify(bills));
+        }
+
+        // Format currency
+        function formatCurrency(n) {
+            return Number(n).toLocaleString('en-IN', { maximumFractionDigits: 2 });
+        }
+
+        // Format date
+        function formatDate(dateStr) {
+            return new Date(dateStr).toLocaleDateString('en-IN', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        // Render single bill card
+        function renderBillCard(bill) {
+            return `
+                <div class="bill-card">
+                    <header>
+                        <h3>Invoice #${bill.invoiceNo}</h3>
+                        <span class="bill-date">${formatDate(bill.date)}</span>
+                    </header>
+                    
+                    <div class="customer-info">
+                        <p><strong>Customer Name:</strong> ${bill.customerName}</p>
+                    </div>
+
+                    <table class="bill-items">
+                        <thead>
+                            <tr>
+                                <th>Item</th>
+                                <th style="text-align:right">Rate</th>
+                                <th style="text-align:center">Qty</th>
+                                <th style="text-align:right">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${bill.items.map(item => `
+                                <tr>
+                                    <td>${item.name}</td>
+                                    <td style="text-align:right">₹${formatCurrency(item.rate)}</td>
+                                    <td style="text-align:center">${item.qty}</td>
+                                    <td style="text-align:right">₹${formatCurrency(item.total)}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+
+                    <div class="bill-summary">
+                        <p><strong>Grand Total:</strong> ₹${formatCurrency(bill.grandTotal)}</p>
+                        <p><strong>Advance Paid:</strong> ₹${formatCurrency(bill.advance)}</p>
+                        <p><strong>Balance:</strong> ₹${formatCurrency(bill.balance)}</p>
+                    </div>
+
+                    <div class="actions">
+                        <button class="btn-print" data-invoice="${bill.invoiceNo}">Print</button>
+                        <button class="btn-delete" data-invoice="${bill.invoiceNo}">Delete</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render all bills as a simple table (data-only view)
+        function renderBills(bills = getBills()) {
+            const billsList = document.getElementById('billsList');
+            if (bills.length === 0) {
+                billsList.innerHTML = '<div class="no-bills"><h3>No bills found</h3></div>';
+                return;
+            }
+
+            let html = `
+                <table class="history-table" style="width:100%;border-collapse:collapse;">
+                    <thead>
+                        <tr>
+                            <th>Invoice</th>
+                            <th>Date</th>
+                            <th>Customer</th>
+                            <th style="text-align:right">Grand Total</th>
+                            <th style="text-align:right">Advance</th>
+                            <th style="text-align:right">Balance</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            html += bills.map(b => `
+                <tr>
+                    <td>${b.invoiceNo}</td>
+                    <td>${formatDate(b.date)}</td>
+                    <td>${b.customerName}</td>
+                    <td style="text-align:right">₹${formatCurrency(b.grandTotal)}</td>
+                    <td style="text-align:right">₹${formatCurrency(b.advance)}</td>
+                    <td style="text-align:right">₹${formatCurrency(b.balance)}</td>
+                    <td>
+                        <button class="btn-delete" data-invoice="${b.invoiceNo}">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+
+            html += `</tbody></table>`;
+            billsList.innerHTML = html;
+            // Attach event listeners to the buttons we just added
+            attachBillListeners();
+        }
+
+        // Search and filter bills
+        function filterBills() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const dateFilter = document.getElementById('dateFilter').value;
+            
+            let bills = getBills();
+            
+            if (searchTerm) {
+                bills = bills.filter(bill => 
+                    bill.customerName.toLowerCase().includes(searchTerm) ||
+                    bill.invoiceNo.toLowerCase().includes(searchTerm)
+                );
+            }
+            
+            if (dateFilter) {
+                const filterDate = new Date(dateFilter).toDateString();
+                bills = bills.filter(bill => 
+                    new Date(bill.date).toDateString() === filterDate
+                );
+            }
+            
+            renderBills(bills);
+        }
+
+        // Clear filters
+        function clearFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('dateFilter').value = '';
+            renderBills();
+        }
+
+        // Print specific bill
+        function printBill(invoiceNo) {
+            const bill = getBills().find(b => b.invoiceNo === invoiceNo);
+            if (!bill) return;
+            
+            // Use the same print format as in the main billing page
+            window.open(`print.html?invoice=${invoiceNo}`, '_blank');
+        }
+
+        // Delete bill
+        function deleteBill(invoiceNo) {
+            if (!confirm('Are you sure you want to delete this bill?')) return;
+
+            const id = String(invoiceNo);
+            const bills = getBills().filter(b => String(b.invoiceNo) !== id);
+            saveBills(bills);
+            renderBills();
+        }
+
+        // Attach event listeners to dynamically rendered bill buttons
+        function attachBillListeners() {
+            document.querySelectorAll('.btn-delete').forEach(btn => {
+                btn.removeEventListener('click', onDeleteClick);
+                btn.addEventListener('click', onDeleteClick);
+            });
+        }
+
+        function onDeleteClick(e) {
+            const invoice = e.currentTarget.getAttribute('data-invoice');
+            deleteBill(invoice);
+        }
+
+        
+
+        // Event listeners
+        document.getElementById('searchInput').addEventListener('input', filterBills);
+        document.getElementById('dateFilter').addEventListener('change', filterBills);
+
+        // Sanitize stored bills to ensure we only keep data (no HTML or large blobs)
+        function sanitizeStoredBills() {
+            const raw = localStorage.getItem('weld_bills');
+            if (!raw) return;
+            try {
+                const parsed = JSON.parse(raw);
+                if (!Array.isArray(parsed)) return;
+                const cleaned = parsed.map(b => ({
+                    invoiceNo: b.invoiceNo || b.invoiceNo === 0 ? b.invoiceNo : 'UNKNOWN',
+                    date: b.date || new Date().toISOString(),
+                    customerName: b.customerName || '',
+                    // Keep items array but ensure each item only has primitive fields
+                    items: Array.isArray(b.items) ? b.items.map(it => ({
+                        name: it && it.name ? it.name : '',
+                        rate: Number((it && it.rate) || 0),
+                        qty: Number((it && it.qty) || 0),
+                        total: Number((it && it.total) || 0)
+                    })) : [],
+                    grandTotal: Number(b.grandTotal || 0),
+                    advance: Number(b.advance || 0),
+                    balance: Number(b.balance || 0)
+                }));
+                localStorage.setItem('weld_bills', JSON.stringify(cleaned));
+            } catch (e) {
+                // If parsing fails, remove corrupt entry
+                localStorage.removeItem('weld_bills');
+            }
+        }
+
+        sanitizeStoredBills();
+
+        // Initial render
+        renderBills();
+    </script>
+</body>
+</html>

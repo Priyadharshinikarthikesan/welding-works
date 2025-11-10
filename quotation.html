@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Amman Welding Works - Quotation System</title>
+</head>
+<nav class="navbar">
+    <div class="logo">
+        <img src="./logo2.png" alt="Welding Workshop Logo" class="logo-img">
+        <h2 class="brand">AMMAN WELDING WORKS</h2>
+    </div>
+    <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="index.html#billing">New Bill</a></li>
+        <li><a href="bills.html">Bill History</a></li>
+        <li><a href="#quotation.html">Quotation</a></li>
+        <li><a href="#contact">Contact</a></li>
+    </ul>
+</nav>
+<style>
+    /* Navbar */
+    .navbar {
+        background: rgb(114, 111, 111);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        padding: 12px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+    }
+
+    .navbar img {
+        height: 60px;
+    }
+
+    .navbar .logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .navbar ul {
+        background: transparent;
+    }
+
+    .navbar ul {
+        background-color: rgb(114, 111, 111);
+        display: flex;
+        gap: 20px;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .logo-img {
+        border-radius: 50px;
+        width: 70px;
+        height: 70px;
+    }
+
+    .logo h2 {
+        margin-left: 5px;
+        color: white;
+    }
+
+    .navbar a {
+        text-decoration: none;
+        color: #f1f0f0;
+        font-weight: 600;
+        font-size: larger;
+    }
+
+    .navbar a:hover {
+        color: var(--accent);
+    }
+</style>
+
+<body style="font-family:Poppins,sans-serif;background:#f4f6f9;margin:0;padding:0;">
+    <div id="mainContainer"
+        style="width:92%;max-width:1100px;margin:22px auto;background:#fff;border-radius:10px;padding:18px;box-shadow:0 0 8px rgba(0,0,0,0.08);">
+        <div style="background:#2367b1;color:#fff;padding:18px;border-radius:8px;text-align:center;">
+            <h1 style="margin:0;font-size:26px;">AMMAN WELDING WORKS</h1>
+            <p style="margin:4px 0;font-size:13px;">20, Arch Main Road, Velankanni, Nagapattinam (dt)</p>
+            <p style="margin:4px 0;font-size:13px;">Mobile: 8973894307 | Owner: M. Karthikesan</p>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:12px 0;font-size:14px;">
+            <div><b>Quotation No:</b> <span id="quoteNo">Q001</span></div>
+            <div><b>Date:</b> <span id="quoteDate">--</span></div>
+            <div><b>Due Date:</b> <span id="dueDate">--</span></div>
+        </div>
+        <!-- ✅ ADD THIS NEW LINE BELOW -->
+        <div id="customerDisplay" style="font-size:15px;font-weight:500;margin-top:8px;">
+            Customer: <span id="displayCustomerName">--</span>
+        </div>
+        <div class="no-print" style="margin-bottom:10px;">
+            <input type="text" id="customerName" placeholder="Enter Customer Name"
+                style="width:100%;padding:8px;border-radius:6px;border:1px solid #ccc;box-sizing:border-box;font-size:14px;">
+        </div>
+
+        <div class="no-print" style="display:flex;gap:8px;flex-wrap:wrap;">
+            <input type="text" id="itemName" placeholder="Item / Service"
+                style="flex:2;padding:8px;border-radius:6px;border:1px solid #ccc;font-size:14px;">
+            <input type="number" id="itemRate" placeholder="Rate (₹)"
+                style="flex:1;padding:8px;border-radius:6px;border:1px solid #ccc;font-size:14px;">
+            <input type="number" id="itemQty" placeholder="Quantity"
+                style="flex:1;padding:8px;border-radius:6px;border:1px solid #ccc;font-size:14px;">
+            <button id="addItemBtn"
+                style="background:#2367b1;color:#fff;padding:8px 12px;border:none;border-radius:6px;cursor:pointer;font-size:14px;">Add
+                Item</button>
+        </div>
+
+        <table id="quotationTable"
+            style="width:100%;border-collapse:collapse;margin-top:12px;font-size:14px; text-align: center;">
+            <thead>
+                <tr style="background:#2367b1;color:#fff;">
+                    <th style="border:1px solid #ccc;padding:8px;">Item</th>
+                    <th style="border:1px solid #ccc;padding:8px;">Rate</th>
+                    <th style="border:1px solid #ccc;padding:8px;">Quantity</th>
+                    <th style="border:1px solid #ccc;padding:8px;">Total</th>
+                    <th class="no-print" style="border:1px solid #ccc;padding:8px;">Action</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <div style="text-align:right;margin-top:12px;font-size:15px;">
+            <div>Subtotal: ₹<span id="subtotal">0.00</span></div>
+            <div>Tax (5%): ₹<span id="tax">0.00</span></div>
+            <div style="font-weight:bold">Grand Total: ₹<span id="grandTotal">0.00</span></div>
+        </div>
+
+        <div class="no-print" style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;">
+            <button id="saveBtn"
+                style="background:#2367b1;color:#fff;padding:8px 12px;border:none;border-radius:6px;cursor:pointer;font-size:14px;">Save
+                Quotation</button>
+            <button id="printBtn"
+                style="background:#198754;color:#fff;padding:8px 12px;border:none;border-radius:6px;cursor:pointer;font-size:14px;">Print
+                Quotation</button>
+            <button id="shareBtn"
+                style="background:#198754;color:#fff;padding:8px 12px;border:none;border-radius:6px;cursor:pointer;font-size:14px;">Share</button>
+            <button id="clearBtn"
+                style="background:#dc3545;color:#fff;padding:8px 12px;border:none;border-radius:6px;cursor:pointer;font-size:14px;">Reset</button>
+        </div>
+
+        <div style="margin-top:12px;font-size:13px;color:#333;">
+            <b>Terms & Conditions:</b> Payment due within 14 days. Thank you for your business.
+        </div>
+
+        <!-- HISTORY SECTION (hidden in print) -->
+        <div class="history-section no-print" style="margin-top:30px;">
+            <h2>Quotation History</h2>
+
+            <div style="display:flex;gap:6px;align-items:center;">
+                <input type="text" id="searchHistory" placeholder="Search by Customer or Date..."
+                    style="flex:1;padding:8px;border-radius:6px;border:1px solid #ccc;font-size:14px;">
+                <button id="clearSearchBtn"
+                    style="background:#dc3545;color:#fff;padding:8px 12px;border:none;border-radius:6px;cursor:pointer;font-size:14px;">
+                    Clear
+                </button>
+            </div>
+
+            <table id="historyTable"
+                style="width:100%;border-collapse:collapse;margin-top:12px;font-size:14px; text-align: center;">
+                <thead>
+                    <tr style="background:#2367b1;color:#fff;">
+                        <th style="border:1px solid #ccc;padding:8px;">Quotation No</th>
+                        <th style="border:1px solid #ccc;padding:8px;">Customer</th>
+                        <th style="border:1px solid #ccc;padding:8px;">Date</th>
+                        <th style="border:1px solid #ccc;padding:8px;">Total (₹)</th>
+                        <!-- <th style="border:1px solid #ccc;padding:8px;">Action</th> -->
+                        <th class="no-print" style="border:1px solid #ccc;padding:8px;">Action</th>
+
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        let items = [], quoteCounter = parseInt(localStorage.getItem('quoteCounter') || '1', 10);
+        const LS_KEY = 'aw_quotations_v1';
+        const tableBody = document.querySelector('#quotationTable tbody');
+        const subtotalEl = document.getElementById('subtotal');
+        const taxEl = document.getElementById('tax');
+        const grandTotalEl = document.getElementById('grandTotal');
+        const quoteNoEl = document.getElementById('quoteNo');
+        const quoteDateEl = document.getElementById('quoteDate');
+        const dueDateEl = document.getElementById('dueDate');
+        const customerEl = document.getElementById('customerName');
+        const displayCustomerEl = document.getElementById('displayCustomerName');
+        customerEl.addEventListener('input', function () {
+            displayCustomerEl.textContent = this.value.trim() || '--';
+        });
+
+        // === Quotation History Search ===
+        const searchInput = document.getElementById('searchHistory');
+        const historyTbody = document.querySelector('#historyTable tbody');
+
+        searchInput.addEventListener('input', function () {
+            const filter = this.value.toLowerCase();
+
+            Array.from(historyTbody.querySelectorAll('tr')).forEach(row => {
+                const text = row.textContent.toLowerCase();
+                if (text.includes(filter)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+
+        // ✅ Clear Search button
+        document.getElementById('clearSearchBtn').onclick = function () {
+            searchInput.value = '';
+            Array.from(historyTbody.querySelectorAll('tr')).forEach(row => row.style.display = '');
+        };
+
+        function formatDate(d) { return String(d.getDate()).padStart(2, '0') + '/' + String(d.getMonth() + 1).padStart(2, '0') + '/' + d.getFullYear(); }
+        function parseNumber(n) { const v = parseFloat(String(n).replace(/[^0-9.\-]/g, '')); return isNaN(v) ? 0 : v; }
+        function updateHeaderDates() {
+            const today = new Date(), due = new Date(); due.setDate(today.getDate() + 14);
+            quoteDateEl.textContent = formatDate(today); dueDateEl.textContent = formatDate(due);
+            quoteNoEl.textContent = 'Q' + String(quoteCounter).padStart(3, '0');
+        }
+        updateHeaderDates();
+
+        document.getElementById('addItemBtn').onclick = function () {
+            const name = document.getElementById('itemName').value.trim();
+            const rate = parseNumber(document.getElementById('itemRate').value);
+            const qty = parseNumber(document.getElementById('itemQty').value);
+            if (!name || rate <= 0 || qty <= 0) { alert("Enter valid item details"); return; }
+            const total = rate * qty; items.push({ item: name, rate, qty, total });
+            renderItems(); clearInputs();
+        };
+
+        function clearInputs() { itemName.value = ''; itemRate.value = ''; itemQty.value = ''; }
+        document.getElementById('clearBtn').onclick = function () {
+            items = [];
+            renderItems();
+            customerEl.value = '';
+            displayCustomerEl.textContent = '--';
+        };
+
+
+        function renderItems() {
+            tableBody.innerHTML = ''; let subtotal = 0;
+            items.forEach((it, i) => {
+                subtotal += it.total;
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td style='border:1px solid #ccc;padding:8px;'>${it.item}</td>
+    <td style='border:1px solid #ccc;padding:8px;'>₹${it.rate.toFixed(2)}</td>
+    <td style='border:1px solid #ccc;padding:8px;'>${it.qty}</td>
+    <td style='border:1px solid #ccc;padding:8px;'>₹${it.total.toFixed(2)}</td>
+    <td style='border:1px solid #ccc;padding:8px;'><button style='background:#dc3545;color:#fff;padding:5px 8px;border:none;border-radius:4px;cursor:pointer;' onclick='deleteItem(${i})'>Delete</button></td>`;
+                tableBody.appendChild(tr);
+            });
+            const tax = subtotal * 0.05, grand = subtotal + tax;
+            subtotalEl.textContent = subtotal.toFixed(2);
+            taxEl.textContent = tax.toFixed(2);
+            grandTotalEl.textContent = grand.toFixed(2);
+        }
+        function deleteItem(i) { items.splice(i, 1); renderItems(); }
+
+        function deleteItem(i) { items.splice(i, 1); renderItems(); }
+
+        // ✅ Fixed Reset button
+        document.getElementById('clearBtn').onclick = function () {
+            items = [];
+            renderItems();
+            customerEl.value = '';
+            displayCustomerEl.textContent = '--'; // clear displayed customer name
+            updateHeaderDates(); // refresh quotation no & date
+        };
+
+
+        document.getElementById('saveBtn').onclick = function () {
+            if (items.length === 0) { alert("No items to save"); return; }
+            const cust = customerEl.value.trim() || 'Unknown';
+            const total = parseNumber(grandTotalEl.textContent);
+            const record = { no: quoteNoEl.textContent, customer: cust, date: quoteDateEl.textContent, total: total.toFixed(2), items: items };
+            let all = JSON.parse(localStorage.getItem(LS_KEY) || '[]');
+            all.push(record); localStorage.setItem(LS_KEY, JSON.stringify(all));
+            quoteCounter++; localStorage.setItem('quoteCounter', quoteCounter);
+            renderHistory(); alert("Quotation saved successfully!");
+        };
+
+        function renderHistory() {
+            let all = JSON.parse(localStorage.getItem(LS_KEY) || '[]');
+            historyTbody.innerHTML = '';
+            all.forEach((q, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+      <td style='border:1px solid #ccc;padding:8px;'>${q.no}</td>
+      <td style='border:1px solid #ccc;padding:8px;'>${q.customer}</td>
+      <td style='border:1px solid #ccc;padding:8px;'>${q.date}</td>
+      <td style='border:1px solid #ccc;padding:8px;'>₹${q.total}</td>
+      <td style='border:1px solid #ccc;padding:8px; display:flex; gap:6px; justify-content:center;'>
+        <button style='background:#198754;color:#fff;padding:5px 8px;border:none;border-radius:4px;cursor:pointer;' onclick='shareQuotation("${q.no}")'>Share</button>
+        <button style='background:#dc3545;color:#fff;padding:5px 8px;border:none;border-radius:4px;cursor:pointer;' onclick='deleteQuotation("${q.no}")'>Delete</button>
+      </td>`;
+                historyTbody.appendChild(tr);
+            });
+        }
+
+        renderHistory();
+
+        function deleteQuotation(no) {
+            if (!confirm("Are you sure you want to delete quotation " + no + "?")) return;
+            let all = JSON.parse(localStorage.getItem(LS_KEY) || '[]');
+            all = all.filter(q => q.no !== no);
+            localStorage.setItem(LS_KEY, JSON.stringify(all));
+            renderHistory();
+            alert("Quotation " + no + " deleted successfully!");
+        }
+
+        function shareQuotation(no) {
+            let all = JSON.parse(localStorage.getItem(LS_KEY) || '[]');
+            const q = all.find(a => a.no === no);
+            if (!q) return;
+            let msg = `Quotation - ${q.no}\nCustomer: ${q.customer}\nDate: ${q.date}\nTotal: ₹${q.total}\nThank you - Amman Welding Works`;
+            if (navigator.share) { navigator.share({ title: 'Quotation ' + q.no, text: msg }); }
+            else { window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(msg)); }
+        }
+        document.getElementById('shareBtn').onclick = function () {
+            const cust = customerEl.value.trim() || 'Unknown';
+            let msg = `Quotation - ${quoteNoEl.textContent}\nCustomer: ${cust}\nDate: ${quoteDateEl.textContent}\nTotal: ₹${grandTotalEl.textContent}\nThank you - Amman Welding Works`;
+            if (navigator.share) { navigator.share({ title: 'Quotation ' + quoteNoEl.textContent, text: msg }); }
+            else { window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(msg)); }
+        };
+
+        document.getElementById('printBtn').onclick = function () {
+            window.print();
+        };
+    </script>
+
+    <style>
+        @media print {
+
+            .no-print,
+            th:last-child,
+            td:last-child {
+                display: none !important;
+            }
+
+            /* ✅ Hide navbar during print */
+            .navbar {
+                display: none !important;
+            }
+
+            body {
+                background: #fff !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            #mainContainer {
+                box-shadow: none !important;
+                width: 100% !important;
+                border-radius: 0 !important;
+            }
+
+            /* Keep blue header and table colors in print */
+            h1,
+            p,
+            th,
+            td,
+            div {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            .history-section {
+                display: none !important;
+            }
+        }
+    </style>
+
+    <!-- } -->
+    </style>
+</body>
+
+</html>
